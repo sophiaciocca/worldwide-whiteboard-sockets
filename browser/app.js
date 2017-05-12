@@ -1,28 +1,24 @@
-// //load in all the things
-// var app = require('express')();
-// var server = require('http').Server(app);
-
 //create socket of browser that's connecting
-var socket = io(window.location.origin);
+var socket = io(window.location.origin); //info about your specific client (window)
 
 //when the socket is connected, start doing everything else
 socket.on('connect', function() {
     console.log("I am connected!");
-
-    //event listener - listen for when whiteboard draws
-    whiteboard.on('draw', (start, end, strokeColor) => {
-        socket.emit('aDraw', start, end, strokeColor);
-    });
-
-    //listen for other people drawing
-    socket.on('otherPersonDraw', function() {
-        console.log('Another person drew!');
-        //draw/render it on your screen
-        whiteboard.draw(start, end, color); //DON'T put 'true' as shouldBroadcast arg -- will create an infinite loop
-
-    })
-
 });
+
+//event listener - listen for when your whiteboard draws, and send it out to everyone else
+whiteboard.on('draw', (start, end, strokeColor) => {
+    socket.emit('aDraw', start, end, strokeColor);
+});
+
+//listen for other people drawing
+socket.on('otherPersonDraw', function() {
+    console.log('Another person drew!');
+    //draw/render it on your screen
+    whiteboard.draw(start, end, color); //DON'T put 'true' as shouldBroadcast arg -- will create an infinite loop
+
+})
+
 
 // Claire's and my beginnings of code (WRONG)
 // whiteboard.on('draw', (start,end,strokeColor) => {
